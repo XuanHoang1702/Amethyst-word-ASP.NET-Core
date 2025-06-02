@@ -33,7 +33,7 @@ namespace Brand.Impls
             return result;
         }
 
-        public async Task<object> Create(string token, BrandCreateDTO input)
+        public async Task<ResultDTO> Create(string token, BrandCreateDTO input)
         {
             var id = _function.DeToken(token).UserId;
             object customInput = new
@@ -42,17 +42,15 @@ namespace Brand.Impls
                 BRAND_NAME = input.BRAND_NAME,
                 BRAND_IMAGE = input.BRAND_IMAGE,
                 BRAND_STATUS = input.BRAND_STATUS,
+                DESCRIPTION = input.DESCRIPTION,
             };
             var json = JsonConvert.SerializeObject(customInput);
             var parameter = new { p_BRAND_DATA_JSON = json };
 
-            var result = await _createData.ExcuteCreateData<BrandDTO>(StoreProcedureConsts.BRAND_Create, parameter);
-
-            return new { data = result};
-
+            return await _createData.ExcuteCreateData<ResultDTO>(StoreProcedureConsts.BRAND_Create, parameter);
         }
 
-        public async Task<object> Update(string token, BrandUpdateDTO input)
+        public async Task<ResultDTO> Update(string token, BrandUpdateDTO input)
         {
             var id = _function.DeToken(token).UserId;
             object customInput = new
@@ -62,14 +60,12 @@ namespace Brand.Impls
                 BRAND_NAME = input.BRAND_NAME,
                 BRAND_IMAGE = input.BRAND_IMAGE,
                 BRAND_STATUS = input.BRAND_STATUS,
+                DESCRIPTION = input.DESCRIPTION,
             };
             var json = JsonConvert.SerializeObject(customInput);
             var parameter = new { p_BRAND_DATA_JSON = json };
 
-            var result = await _createData.ExcuteCreateData<BrandUpdateDTO>(StoreProcedureConsts.BRAND_Update, parameter);
-
-            return new { data = result };
-
+            return await _createData.ExcuteCreateData<ResultDTO>(StoreProcedureConsts.BRAND_Update, parameter);
         }
 
         public async Task<ResultDTO> Delete(string token, int id)

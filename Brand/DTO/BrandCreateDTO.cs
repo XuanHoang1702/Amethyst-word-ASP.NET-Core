@@ -10,6 +10,7 @@ namespace Brand.DTO
     {
         public string BRAND_NAME {  get; set; }
         public string BRAND_IMAGE { get; set; }
+        public string DESCRIPTION { get; set; }
         public string BRAND_STATUS { get; set; }
     }
 }

@@ -11,6 +11,7 @@ namespace Category.DTO
         public string? CATEGORY_NAME { get; set; }
         public string? CATEGORY_IMAGE { get; set; }
         public string? CATEGORY_STATUS { get; set; }
+        public string? DESCRIPTION { get; set; }
 
     }
 }

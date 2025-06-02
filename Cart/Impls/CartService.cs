@@ -33,13 +33,15 @@ namespace Cart.Impls
             return result;
         }
 
-        public async Task<ResultDTO> Create(string token, CartDTO input)
+        public async Task<ResultDTO> Create(string token, CartCreateDTO input)
         {
             var userId = _function.DeToken(token).UserId;
             var json = new 
             {
                 USER_ID = userId,
                 PRODUCT_ID = input.PRODUCT_ID,
+                COLOR_ID = input.COLOR_ID,
+                SIZE_ID = input.SIZE_ID,
                 QUANTITY = input.QUANTITY,
             };
             var parameter = JsonConvert.SerializeObject(json);

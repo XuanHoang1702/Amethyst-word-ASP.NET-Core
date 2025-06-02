@@ -36,7 +36,7 @@ namespace Category.Impls
             return result;
         }
 
-        public async Task<object> Create(string token, CategoryCreateDTO input)
+        public async Task<ResultDTO> Create(string token, CategoryCreateDTO input)
         {
             var id = _function.DeToken(token).UserId;
             object customInput = new
@@ -44,17 +44,17 @@ namespace Category.Impls
                 ADMIN_ID = id,
                 CATEGORY_NAME = input.CATEGORY_NAME,
                 CATEGORY_IMAGE = input.CATEGORY_IMAGE,
-                CATEGORY_STATUS = input.CATEGORY_STATUS
+                CATEGORY_STATUS = input.CATEGORY_STATUS,
+                DESCRIPTION = input.DESCRIPTION
             };
 
             var json = JsonConvert.SerializeObject(customInput);
             var parameter = new { p_CATEGORY_DATA_JSON = json };
-            var result = await _createData.ExcuteCreateData<object>(StoreProcedureConsts.CATEGORY_Create, parameter);
-
-            return new { data = result };
+            return await _createData.ExcuteCreateData<ResultDTO>(StoreProcedureConsts.CATEGORY_Create, parameter);
+            
         }
 
-        public async Task<object> Update(string token, CategoryUpdateDTO input)
+        public async Task<ResultDTO> Update(string token, CategoryUpdateDTO input)
         {
             var id = _function.DeToken(token).UserId;
             object customInput = new
@@ -63,14 +63,14 @@ namespace Category.Impls
                 CATEGORY_ID = input.CATEGORY_ID,
                 CATEGORY_NAME = input.CATEGORY_NAME,
                 CATEGORY_IMAGE = input.CATEGORY_IMAGE,
-                CATEGORY_STATUS = input.CATEGORY_STATUS
+                CATEGORY_STATUS = input.CATEGORY_STATUS,
+                DESCRIPTION = input.DESCRIPTION
             };
 
             var json = JsonConvert.SerializeObject(customInput);
             var parameter = new { p_CATEGORY_DATA_JSON = json };
-            var result = await _updateData.ExceuteUpdateData<object>(StoreProcedureConsts.CATEGORY_Update, parameter);
+            return await _updateData.ExceuteUpdateData<ResultDTO>(StoreProcedureConsts.CATEGORY_Update, parameter);
 
-            return new { data = result };
         }
 
         public async Task<ResultDTO> Delete(string token, int id)

@@ -11,7 +11,7 @@ namespace Cart.Intfs
     public interface ICartService
     {
         public List<CartDTO> GetAll(string token);
-        public Task<ResultDTO> Create(string token, CartDTO input);
+        public Task<ResultDTO> Create(string token, CartCreateDTO input);
         public Task<ResultDTO> Delete(string token, int input);
     }
 }

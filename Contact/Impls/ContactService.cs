@@ -1,4 +1,5 @@
-﻿using Application.Share;
+﻿using Admin.DTO;
+using Application.Share;
 using Application.Share.Consts;
 using Contact.DTO;
 using Contact.Intfs;
@@ -31,15 +32,10 @@ namespace Contact.Impls
             return  _getListData.ExecuteGetListData<ContactDTO>(StoreProcedureConsts.CONTACT_List);
         }
 
-        public async Task<object> Create(ContactCreateDTO input)
+        public async Task<ResultDTO> Create(ContactCreateDTO input)
         {
             var json = JsonConvert.SerializeObject(input);
-            var result = await _createData.ExcuteCreateData<ContactDTO>(StoreProcedureConsts.CONTACT_Create, new { p_CONTACT_DATA_JSON = json });
-            if (result != null)
-            {
-                return new { code = 201, data = result };
-            }
-            return new { code = 400, message = "Không thể liên hệ ngay lúc này" };
+            return await _createData.ExcuteCreateData<ResultDTO>(StoreProcedureConsts.CONTACT_Create, new { p_CONTACT_DATA_JSON = json });
         }
 
         public async Task<ContactDTO> Update(string token, int id, string status)

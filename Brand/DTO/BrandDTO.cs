@@ -14,5 +14,7 @@ namespace Brand.DTO
         public string? BRAND_STATUS { get; set; }
         public DateTime CREATED_AT { get; set; }
         public DateTime UPDATE_AT { get; set; }
+        public string? DESCRIPTION { get; set; }
+        public int PRODUCT_QUANTITY { get; set; }
     }
 }
