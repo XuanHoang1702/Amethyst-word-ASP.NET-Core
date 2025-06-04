@@ -7,6 +7,8 @@ using Newtonsoft.Json.Linq;
 using System.Security.Claims;
 using User.DTO;
 using User.Intfs;
+using System.Web;
+using Microsoft.Data.SqlClient;
 
 namespace ECommerce.Web.Core.Controllers
 {
@@ -14,7 +16,12 @@ namespace ECommerce.Web.Core.Controllers
     public class UserController : Controller
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService) { _userService = userService; }
+        private readonly IWebHostEnvironment _environment;
+        public UserController(IUserService userService, IWebHostEnvironment environment)
+        {
+            _userService = userService;
+            _environment = environment;
+        }
 
         [HttpGet]
         public ActionResult<List<UserDTO>> GetList() => _userService.User_List();

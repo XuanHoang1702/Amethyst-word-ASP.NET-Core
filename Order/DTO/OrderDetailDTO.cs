@@ -11,6 +11,8 @@ namespace Order.DTO
         public int PRODUCT_ID { get; set; }
         public int QUANTITY {  get; set; }
         public decimal PRODUCT_PRICE { get; set; }
+        public int COLOR_ID { get; set; }
+        public int SIZE_ID { get; set; }
         public decimal SUBTOTAL { get; set; }
     }
 }

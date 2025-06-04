@@ -23,7 +23,7 @@ namespace ECommerce.Web.Core.Controllers
         }
 
         [HttpPost]
-        public async Task<ResultDTO> Create([FromHeader(Name = "Authorization")] string token,[FromBody] CartDTO input)
+        public async Task<ResultDTO> Create([FromHeader(Name = "Authorization")] string token,[FromBody] CartCreateDTO input)
         {
             if (token.StartsWith("Bearer "))
                 token = token.Substring(7);

@@ -14,5 +14,7 @@ namespace Order.Intfs
         public Task<ResultDTO> CreateOrderDetail(string OrderId, List<OrderDetailDTO> input);
         public Task<ResultDTO> CheckoutOnl(string input);
         public Task<ResultDTO> GetStatus(string token, string id);
+        public List<OrderNewDTO> GetNew();
+        public List<OrderDTO> GetOrders(string token);
     }
 }

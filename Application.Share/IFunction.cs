@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,5 +23,7 @@ namespace Application.Share
         public string GenerateRefreshToken();
         public string Config_ID_Order();
         public Task<bool> MailVerifyAccount(string email, string userName);
+        public Task HandleSocketAsync(WebSocket socket);
+        public Task SendMessageAsync(string orderCode, string message);
     }
 } 

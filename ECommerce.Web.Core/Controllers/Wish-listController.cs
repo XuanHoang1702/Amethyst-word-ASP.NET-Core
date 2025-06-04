@@ -31,7 +31,7 @@ namespace ECommerce.Web.Core.Controllers
         }
 
         [HttpDelete]
-        public async Task<ResultDTO> Delete([FromHeader(Name = "Authorization")] string token,[FromBody] int id)
+        public async Task<ResultDTO> Delete([FromHeader(Name = "Authorization")] string token, int id)
         {
             if (token.StartsWith("Bearer "))
                 token = token.Substring(7);

@@ -44,37 +44,9 @@ namespace Product.Impls
             return result;
         }
 
-        public async Task<object> Detail(int id)
+        public async Task<ProductDetailDTO> Detail(int id)
         {
-            var rawData =  _getListData.ExeciteGetListDataById<ProductDetailDTO>(StoreProcedureConsts.PRODUCT_Detail, new { p_PRODUCT_ID = id });
-            if (rawData == null || !rawData.Any())
-            {
-                return new { data = (object?)null };
-            }
-            var first = rawData.First();
-
-            var result = new ProductDetailDTO
-            {
-                PRODUCT_ID = id,
-                PRODUCT_NAME = first.PRODUCT_NAME,
-                IMAGE_NAME = first.IMAGE_NAME,
-                PRODUCT_PRICE = first.PRODUCT_PRICE,
-                PRODUCT_DETAIL = first.PRODUCT_DETAIL,
-                PRODUCT_DESCRIPTION = first.PRODUCT_DESCRIPTION,
-                QUANTITY_TOTAL = first.QUANTITY_TOTAL,
-                PRODUCT_STATUS = "Active",
-                CREATED_AT = DateTime.Now,
-                UPDATED_AT = DateTime.Now,
-                Variants = rawData.Select(x => new ProductVariantDTO
-                {
-                    COLOR_NAME = x.COLOR_NAME,
-                    SIZE_NAME = x.SIZE_NAME,
-                    QUANTITY_COLOR = x.QUANTITY_COLOR,
-                    QUANTITY_SIZE = x.QUANTITY_SIZE
-                }).ToList()
-            };
-
-            return new { data = result };
+            return await _getData.ExecuteGetData<ProductDetailDTO>(StoreProcedureConsts.PRODUCT_Detail, new { p_PRODUCT_ID = id });
         }
 
         public PaginateResult<ProductDTO> Search(string name, int pageNumber, int pageSize)
@@ -108,7 +80,7 @@ namespace Product.Impls
             return result;
         }
 
-        public async Task<object> Create(string token, ProductCreateDTO input)
+        public async Task<ResultDTO> Create(string token, ProductCreateDTO input)
         {
             var id = _function.DeToken(token).UserId;
             var json = new
@@ -124,9 +96,7 @@ namespace Product.Impls
             };
 
             var param = JsonConvert.SerializeObject(json);
-            ProductDetailDTO result = await _createData.ExcuteCreateData<ProductDetailDTO>(StoreProcedureConsts.PRODUCT_Create, new { p_PRODUCT_DATA_JSON = param });
-
-            return new { code = 201, data = result };
+            return await _createData.ExcuteCreateData<ResultDTO>(StoreProcedureConsts.PRODUCT_Create, new { p_PRODUCT_DATA_JSON = param });
         }
 
         public async Task<ResultDTO> Delete(string token, int id)
@@ -137,14 +107,14 @@ namespace Product.Impls
                 ADMIN_ID = AdminId,
                 PRODUCT_ID = id
             };
-
+                
             var param = JsonConvert.SerializeObject(json);
             var result = await _deleteData.ExcuteDeleteData<ResultDTO>(StoreProcedureConsts.PRODUCT_Delete, new { p_PRODUCT_DATA_JSON = param });
 
             return result;
         }
 
-        public async Task<object> Update(string token, ProductUpdateDTO input)
+        public async Task<ResultDTO> Update(string token, ProductUpdateDTO input)
         {
             var id = _function.DeToken(token).UserId;
             var json = new
@@ -161,9 +131,7 @@ namespace Product.Impls
             };
 
             var param = JsonConvert.SerializeObject(json);
-            var result = await _updateData.ExceuteUpdateData<ProductDetailDTO>(StoreProcedureConsts.PRODUCT_Update, new { p_PRODUCT_DATA_JSON = param });
-
-            return new { data = result };
+            return await _updateData.ExceuteUpdateData<ResultDTO>(StoreProcedureConsts.PRODUCT_Update, new { p_PRODUCT_DATA_JSON = param });
         }
 
         public async Task<List<ProductDTO>> Related(int input)
@@ -180,6 +148,50 @@ namespace Product.Impls
         public async Task<List<ProductDTO>> ProductBestSeller(int quantity)
         {
             return _lstData.ExecuteGetRecordData<ProductDTO>(StoreProcedureConsts.PRODUCT_BestSeller, new { p_RECORD = quantity });
+        }
+
+        public async Task<ResultDTO> CreateImage(string token, ImageDTO input)
+        {
+            var userId = _function.DeToken(token).UserId;
+            var json = new
+            {
+                ADMIN_ID = userId,
+                IMAGE_NAME = input.IMAGE_NAME,
+                PRODUCT_ID = input.PRODUCT_ID,
+                IMAGE_STATUS = input.IMAGE_STATUS
+            };
+
+            var parameter = JsonConvert.SerializeObject(json);
+            return await _createData.ExcuteCreateData<ResultDTO>(StoreProcedureConsts.PRODUCT_IMAGE_Create, new { p_PRODUCT_IMAGE_DATA = parameter });
+        }
+
+        public List<ColorDTO> GetColor(int id)
+        {
+            return _lstData.ExeciteGetListDataById<ColorDTO>(StoreProcedureConsts.COLOR_Product, new { p_PRODUCT_ID = id });
+        }
+
+        public List<SizeDTO> GetSize(int id)
+        {
+            return _lstData.ExeciteGetListDataById<SizeDTO>(StoreProcedureConsts.SIZE_Product, new { p_PRODUCT_ID = id });
+        }
+
+        public async Task<ResultDTO> RateComment(string token, RateCommentDTO input)
+        {
+            var userId = _function.DeToken(token).UserId;
+            var json = new
+            {
+                USER_ID = userId,
+                PRODUCT_ID = input.PRODUCT_ID,
+                RATE = input.RATE,
+                COMMENT = input.COMMENT
+            };
+            var parameter = JsonConvert.SerializeObject(json);
+            return await _createData.ExcuteCreateData<ResultDTO>(StoreProcedureConsts.RATE_COMMENT_Create, new { p_RATE_COMMENT_DATA = parameter });
+        }
+
+        public async Task<List<RateCommentDTO>> GetRateComment(int id)
+        {
+            return _getListData.ExeciteGetListDataById<RateCommentDTO>(StoreProcedureConsts.RATE_COMMENT_List, new { p_PRODUCT_ID = id});
         }
     }
 }

@@ -12,6 +12,10 @@ using Application.Share.Consts.DTO;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Edge;
+using Newtonsoft.Json.Linq;
+using Twilio.Rest.Trunking.V1;
+using System.Net.WebSockets;
+using System.Text;
 
 
 
@@ -27,8 +31,9 @@ namespace Application.Share
         private readonly string? _emailImgur;
         private readonly string? _passwrdImgur;
         private readonly string? _userArgent;
+        private readonly WebSocketConnectionManager _manager;
 
-        public Function(IConfiguration configuration)
+        public Function(IConfiguration configuration , WebSocketConnectionManager manager)
         {
             _secretkey = configuration["SecretKey"];
             _smtPassword = configuration["EmailSettings:SmtpPassword"];
@@ -38,6 +43,7 @@ namespace Application.Share
             _emailImgur = configuration["Imgur:email"];
             _passwrdImgur = configuration["Imgur:passwrd"];
             _userArgent = configuration["Imgur:user_argent"];
+            _manager = manager;
         }
 
         public string HashPassword(string password)
@@ -48,13 +54,11 @@ namespace Application.Share
                 return Convert.ToBase64String(result);
             }
         }
-
         public bool VerifyPassword(string inputPassword, string storedHash)
         {
             string hashedInput = HashPassword(inputPassword);
             return hashedInput == storedHash;
         }
-
         public string Config_ID()
         {
             var randId = Guid.NewGuid().ToString("N");
@@ -63,7 +67,6 @@ namespace Application.Share
 
             return $"CS_{charId}{numberId}";
         }
-
         public string Config_ID_Admin()
         {
             var randId = Guid.NewGuid().ToString("N");
@@ -72,7 +75,6 @@ namespace Application.Share
 
             return $"AD_{charId}{numberId}";
         }
-
         public string Config_ID_Order()
         {
             var randId = Guid.NewGuid().ToString("N");
@@ -81,7 +83,6 @@ namespace Application.Share
 
             return $"OR{charId}{numberId}";
         }
-
         public string GenerateToken(string userId, string userLastName, string userEmail = "gmail@.com", string userPhone = "098", string? role = "")
         {
             var tokenHandle = new JwtSecurityTokenHandler();
@@ -104,14 +105,22 @@ namespace Application.Share
             var token = tokenHandle.CreateToken(tokenDes);
             return tokenHandle.WriteToken(token);
         }
-
         public TokenDTO DeToken(string token)
         {
             var tokenHandle = new JwtSecurityTokenHandler();
+            TokenDTO result = new TokenDTO();
             var key = Encoding.UTF8.GetBytes(_secretkey);
 
             try
             {
+                var jwtToken = tokenHandle.ReadJwtToken(token);
+
+                if (jwtToken.ValidTo < DateTime.UtcNow)
+                {
+                    result.Message = "Token đã hết hạn";
+                    return result;
+                }
+
                 var tokenValidationParams = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
@@ -125,24 +134,23 @@ namespace Application.Share
                 var userId = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                 var role = principal.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value;
 
-                if(string.IsNullOrEmpty(userId)) 
+                if (string.IsNullOrEmpty(userId))
                 {
-                    throw new Exception("Token không hợp lệ");
+                    result.Message = "Token không hợp lệ";
+                    return result;
                 }
 
-                TokenDTO result = new TokenDTO
-                {
-                    UserId = userId,
-                    Role = string.IsNullOrEmpty(role) ? "USER" : role
-                };
+                result.UserId = userId;
+                result.Role = string.IsNullOrEmpty(role) ? "USER" : role;
                 return result;
             }
-            catch
+            catch (Exception ex)
             {
-                Console.WriteLine(Console.Error);
-                throw;
+                result.Message = "Token không hợp lệ hoặc bị lỗi: " + ex.Message;
+                return result;
             }
         }
+
         public async Task<bool> SendMailOTP(string email, string userName, string otpCode)
         {
             try
@@ -385,6 +393,31 @@ namespace Application.Share
             {
                 rng.GetBytes(randomNumber);
                 return Convert.ToBase64String(randomNumber);
+            }
+        }
+        public async Task HandleSocketAsync(WebSocket socket)
+        {
+            var buffer = new byte[1024 * 4];
+            var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            var orderCode = Encoding.UTF8.GetString(buffer, 0, result.Count);
+
+            _manager.AddSocket(orderCode, socket);
+
+            while (!result.CloseStatus.HasValue)
+            {
+                result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            }
+
+            _manager.RemoveSocket(orderCode);
+            await socket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
+        }
+        public async Task SendMessageAsync(string orderCode, string message)
+        {
+            var socket = _manager.GetSocket(orderCode);
+            if (socket != null && socket.State == WebSocketState.Open)
+            {
+                var bytes = Encoding.UTF8.GetBytes(message);
+                await socket.SendAsync(new ArraySegment<byte>(bytes), WebSocketMessageType.Text, true, CancellationToken.None);
             }
         }
 

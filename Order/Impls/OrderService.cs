@@ -21,13 +21,15 @@ namespace Order.Impls
         private readonly ICreateData _createData;
         private readonly IUpdateData _updateData;
         private readonly IGetData _getData;
+        private readonly IGetListData _lstData;
 
-        public OrderService(IFunction function, ICreateData createData, IUpdateData updateData, IGetData getData)
+        public OrderService(IFunction function, ICreateData createData, IUpdateData updateData, IGetData getData, IGetListData getListData)
         {
             _function = function;
             _createData = createData;
             _updateData = updateData;
             _getData = getData;
+            _lstData = getListData;
         }
 
         public async Task<ResultDTO> CreateOrder(string token, OrderDTO input)
@@ -75,6 +77,17 @@ namespace Order.Impls
             };
             var parameter = JsonConvert.SerializeObject(json);
             return await _getData.ExecuteGetData<ResultDTO>(StoreProcedureConsts.ORDER_STATUS, new { p_ORDER_DATA_JSON = parameter });
+        }
+
+        public List<OrderNewDTO> GetNew()
+        {
+            return  _lstData.ExecuteGetListData<OrderNewDTO>(StoreProcedureConsts.ORDER_New);
+        }
+
+        public List<OrderDTO> GetOrders(string token)
+        {
+            var userId = _function.DeToken(token).UserId;
+            return _lstData.ExeciteGetListDataById<OrderDTO>(StoreProcedureConsts.ORDER_List, new { p_USER_ID = userId });
         }
     }
 }

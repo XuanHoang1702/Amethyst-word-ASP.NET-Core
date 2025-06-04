@@ -18,7 +18,7 @@ namespace ECommerce.Web.Core.Controllers
         public List<BrandDTO> GetList() => _brandService.GetList();
 
         [HttpPost]
-        public async Task<object> Create([FromHeader(Name = "Authorization")] string token, [FromBody] BrandCreateDTO input)
+        public async Task<ResultDTO> Create([FromHeader(Name = "Authorization")] string token, [FromBody] BrandCreateDTO input)
         {
             if(token.StartsWith("Bearer "))
                 token = token.Substring(7);
@@ -26,7 +26,7 @@ namespace ECommerce.Web.Core.Controllers
         }
 
         [HttpPut]
-        public async Task<object>Update([FromHeader(Name = "Authorization")] string token, [FromBody] BrandUpdateDTO input)
+        public async Task<ResultDTO>Update([FromHeader(Name = "Authorization")] string token, [FromBody] BrandUpdateDTO input)
         {
             if (token.StartsWith("Bearer "))
                 token = token.Substring(7);
@@ -34,7 +34,7 @@ namespace ECommerce.Web.Core.Controllers
         }
 
         [HttpDelete]
-        public async Task<ResultDTO> Delete([FromHeader(Name = "Authorization")] string tokenm, [FromBody] int id)
+        public async Task<ResultDTO> Delete([FromHeader(Name = "Authorization")] string tokenm, int id)
         {
             if(tokenm.StartsWith("Bearer "))
                 tokenm = tokenm.Substring(7);

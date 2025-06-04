@@ -8,7 +8,8 @@ namespace Application.Share.Consts.DTO
 {
     public class TokenDTO
     {
-        public string UserId { get; set; }
-        public string Role { get; set; }
+        public string? UserId { get; set; }
+        public string? Role { get; set; }
+        public string? Message { get; set; }
     }
 }

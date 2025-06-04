@@ -33,5 +33,16 @@ namespace ECommerce.Web.Core.Controllers
                 token = token.Substring(7);
             return await _orderService.GetStatus(token, id);
         }
+
+        [HttpGet]
+        public List<OrderNewDTO> GetNew() => _orderService.GetNew();
+
+        [HttpGet]
+        public List<OrderDTO> GetOrder([FromHeader(Name = "Authorization")] string token)
+        {
+            if(token.StartsWith("Bearer "))
+                   token = token.Substring(7);
+            return _orderService.GetOrders(token);
+        }
     }
 }

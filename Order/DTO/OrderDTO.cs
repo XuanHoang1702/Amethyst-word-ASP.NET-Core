@@ -15,5 +15,6 @@ namespace Order.DTO
         public decimal? TOTAL_PRICE { get; set; }
         public string? NOTE { get; set; }
         public int? ORDER_STATUS { get; set; }
+        public DateTime? CREATED_AT { get; set; }
     }
 }

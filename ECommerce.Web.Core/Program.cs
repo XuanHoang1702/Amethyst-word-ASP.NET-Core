@@ -26,6 +26,8 @@ using Cart.Intfs;
 using Cart.Impls;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Dashboard.Intfs;
+using Dashboard.Impls;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,6 +57,8 @@ builder.Services.AddSingleton<IMenuService, MenuService>();
 builder.Services.AddSingleton<IStockService, StockService>();
 builder.Services.AddSingleton<IOrderService, OrderService>();
 builder.Services.AddSingleton<ICartService, CartService>();
+builder.Services.AddSingleton<IDashboardService, DashboardService>();
+builder.Services.AddSingleton<WebSocketConnectionManager>();
 
 builder.Services.AddControllers();
 
@@ -113,10 +117,15 @@ if (app.Environment.IsDevelopment())
     });
     app.UseSwaggerUI();
 }
+app.UseStaticFiles();
 app.UseSession();
 //app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 app.UseAuthorization();
+app.UseWebSockets(new WebSocketOptions
+{
+    KeepAliveInterval = TimeSpan.FromMinutes(2)
+});
 app.MapControllers();
 
 app.Run();

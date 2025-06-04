@@ -1,4 +1,5 @@
-﻿using Contact.DTO;
+﻿using Admin.DTO;
+using Contact.DTO;
 using Contact.Intfs;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +19,7 @@ namespace ECommerce.Web.Core.Controllers
         public List<ContactDTO> GetList(string status) => _contactService.GetList(status);
 
         [HttpPost]
-        public async Task<object> Create(ContactCreateDTO input) => await _contactService.Create(input);
+        public async Task<ResultDTO> Create([FromBody] ContactCreateDTO input) => await _contactService.Create(input);
 
         [HttpPut]
         public async Task<ContactDTO> Update([FromHeader(Name = "Authorization")] string token, [FromBody] int id, [FromBody] string status = "COMPLETED")

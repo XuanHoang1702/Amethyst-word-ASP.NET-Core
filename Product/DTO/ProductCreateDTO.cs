@@ -14,6 +14,9 @@ namespace Product.DTO
         public string PRODUCT_DESCRIPTION { get; set; }
         public int BRAND_ID { get; set; }
         public int CATEGORY_ID { get; set; }
+        public string COLOR_NAME { get; set; }
+        public string SIZE_NAME { get; set; }
+        public int QUANTITY {  get; set; }
         public string PRODUCT_STATUS { get; set; }
     }
 }

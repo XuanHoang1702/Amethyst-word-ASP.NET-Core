@@ -39,15 +39,5 @@ namespace ECommerce.Web.Core.Controllers
 
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> SendOtpSms(string phoneNumber, string userName)
-        //{
-        //    bool result = await _function.SendSmsOTP(phoneNumber, userName);
-
-        //    if (result)
-        //        return Ok("SMS OTP đã được gửi!");
-        //    return BadRequest("Gửi SMS thất bại.");
-        //}
-
     }
 }

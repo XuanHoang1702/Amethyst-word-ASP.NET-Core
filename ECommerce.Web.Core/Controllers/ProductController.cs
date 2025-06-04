@@ -34,7 +34,7 @@ namespace ECommerce.Web.Core.Controllers
         }
 
         [HttpGet]
-        public async Task<object> Detail(int input) => await _productService.Detail(input);
+        public async Task<ProductDetailDTO> Detail(int input) => await _productService.Detail(input);
 
         [HttpGet]
         public IActionResult Search(string name, int pageNumber = 1, int pageSize = 10)
@@ -61,7 +61,7 @@ namespace ECommerce.Web.Core.Controllers
         }
 
         [HttpPost]
-        public async Task<object> Create([FromHeader(Name = "Authorization")] string token, [FromBody] ProductCreateDTO input)
+        public async Task<ResultDTO> Create([FromHeader(Name = "Authorization")] string token, [FromBody] ProductCreateDTO input)
         {
             if (token.StartsWith("Bearer "))
                 token = token.Substring(7);
@@ -69,7 +69,7 @@ namespace ECommerce.Web.Core.Controllers
         }
 
         [HttpDelete]
-        public async Task<ResultDTO> Delete([FromHeader(Name = "Authorization")] string token, [FromBody] int id)
+        public async Task<ResultDTO> Delete([FromHeader(Name = "Authorization")] string token, int id)
         {
             if (token.StartsWith("Bearer "))
                 token = token.Substring(7);
@@ -77,7 +77,7 @@ namespace ECommerce.Web.Core.Controllers
         }
 
         [HttpPut]
-        public async Task<object> Update([FromHeader(Name = "Authorization")] string token, [FromBody] ProductUpdateDTO input)
+        public async Task<ResultDTO> Update([FromHeader(Name = "Authorization")] string token, [FromBody] ProductUpdateDTO input)
         {
             if(token.StartsWith("Bearer "))
                 token = token.Substring(7);
@@ -93,7 +93,22 @@ namespace ECommerce.Web.Core.Controllers
         [HttpGet]
         public async Task<List<ProductDTO>> ProductBestSeller(int input) => await _productService.ProductBestSeller(input);
 
+        [HttpGet]
+        public List<ColorDTO> GetColor(int id) => _productService.GetColor(id);
 
+        [HttpGet]
+        public List<SizeDTO> getSize(int id) => _productService.GetSize(id);
+
+        #endregion
+
+        #region Image
+        [HttpPost]
+        public async Task<ResultDTO> CreateImage([FromHeader(Name = "Authorization")] string token, [FromBody] ImageDTO input)
+        {
+            if(token.StartsWith("Bearer "))
+                token = token.Substring(7);
+            return await _productService.CreateImage(token, input);
+        }
         #endregion
 
         #region Discount
@@ -141,6 +156,21 @@ namespace ECommerce.Web.Core.Controllers
         #region Stock
         [HttpGet]
         public List<StockDTO> GetStocks() => _stockService.StockList();
+
+        #endregion
+
+        #region Rate Comment
+
+        [HttpPost]
+        public async Task<ResultDTO> Create_Rate_Comment([FromHeader(Name = "Authorization")] string token,[FromBody] RateCommentDTO input)
+        {
+            if(token.StartsWith("Bearer "))
+                token = token.Substring(7);
+            return await _productService.RateComment(token, input);
+        }
+
+        [HttpGet]
+        public async Task<List<RateCommentDTO>> Get_Rate_Comment(int id) => await _productService.GetRateComment(id);
 
         #endregion
 

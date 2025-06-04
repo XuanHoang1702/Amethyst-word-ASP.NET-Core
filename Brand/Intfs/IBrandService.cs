@@ -11,8 +11,8 @@ namespace Brand.Intfs
     public interface IBrandService
     {
         public List<BrandDTO> GetList();
-        public Task<object> Create(string token, BrandCreateDTO input);
-        public Task<object> Update(string token, BrandUpdateDTO input);
+        public Task<ResultDTO> Create(string token, BrandCreateDTO input);
+        public Task<ResultDTO> Update(string token, BrandUpdateDTO input);
         public Task<ResultDTO> Delete(string token, int id);
     }
 }

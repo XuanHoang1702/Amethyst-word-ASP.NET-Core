@@ -50,6 +50,10 @@ namespace Application.Share.Consts
         public const string PRODUCT_Related = "PRODUCT_Related";
         public const string PRODUCT_New = "PRODUCT_New";
         public const string PRODUCT_BestSeller = "PRODUCT_BestSeller";
+        public const string PRODUCT_IMAGE_Create = "PRODUCT_IMAGE_Create";
+        public const string COLOR_Product = "COLOR_Product";
+        public const string SIZE_Product = "SIZE_Product";
+
 
         //Discount
         public const string DISCOUNT_List = "DISCOUNT_List";
@@ -96,10 +100,22 @@ namespace Application.Share.Consts
         public const string ORDER_DETAIL_Create = "ORDER_DETAIL_Create";
         public const string ORDER_Update = "ORDER_Update";
         public const string ORDER_STATUS = "ORDER_STA";
+        public const string ORDER_New = "ORDER_New";
+        public const string ORDER_List = "ORDER_List";
 
         //OTP 
         public const string OTP_STORE_Create = "OTP_STORE_Create";
 
+        //Dash board
+        public const string USER_Quantity = "USER_Quantity";
+        public const string ORDER_Quantity = "ORDER_Quantity";
+        public const string ORDER_Revenue = "ORDER_Revenue";
+        public const string REVENUE_Month = "REVENUE_Month";
+        public const string REVENUE_Week = "REVENUE_Week";
+        public const string REVENUE_Total = "REVENUE_Total";
 
+        //Rat Comment
+        public const string RATE_COMMENT_Create = "RATE_COMMENT_Create";
+        public const string RATE_COMMENT_List = "RATE_COMMENT_List";
     }
 } 

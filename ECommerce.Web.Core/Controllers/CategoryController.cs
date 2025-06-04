@@ -19,7 +19,7 @@ namespace ECommerce.Web.Core.Controllers
         public List<CategoryDTO> GetList() => _categoryService.GetList();
 
         [HttpPost]
-        public async Task<object> Create([FromHeader(Name = "Authorization")] string token, [FromBody] CategoryCreateDTO input)
+        public async Task<ResultDTO> Create([FromHeader(Name = "Authorization")] string token, [FromBody] CategoryCreateDTO input)
         {
             if(token.StartsWith("Bearer "))
                 token = token.Substring(7);
@@ -27,7 +27,7 @@ namespace ECommerce.Web.Core.Controllers
         }
 
         [HttpPut]
-        public async Task<object> Update([FromHeader(Name = "Authorization")] string token, [FromBody] CategoryUpdateDTO input)
+        public async Task<ResultDTO> Update([FromHeader(Name = "Authorization")] string token, [FromBody] CategoryUpdateDTO input)
         {
             if (token.StartsWith("Bearer "))
                 token = token.Substring(7);
@@ -36,11 +36,11 @@ namespace ECommerce.Web.Core.Controllers
         }
 
         [HttpDelete]
-        public async Task<ResultDTO> Delete([FromHeader(Name = "Authorization")] string token, [FromBody] int input)
+        public async Task<ResultDTO> Delete([FromHeader(Name = "Authorization")] string token, int id)
         {
             if(token.StartsWith("Bearer "))
                 token = token.Substring(7);
-            return await _categoryService.Delete(token, input);
+            return await _categoryService.Delete(token, id);
         }
     }
 }
